@@ -97,7 +97,7 @@ class DateField(Field):
     def to_python(self, value: Any):
         if value:
             try:
-                value = dateutil.parser.parse(value, dayfirst=self.dayfirst)
+                value = dateutil.parser.parse(value, dayfirst=self.dayfirst).date()
             except (ValueError, OverflowError):
                 raise validators.ValidationError('Некорректное значение.')
 

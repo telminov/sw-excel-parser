@@ -1,14 +1,21 @@
-from distutils.core import setup
+from setuptools import setup
+from sw_excel_parser import __version__
+
 
 setup(
     name='sw-excel-parser',
-    version='0.0.1',
-    packages=['sw_excel_parser'],
+    version=__version__,
+    packages=[
+        'sw_excel_parser',
+        'sw_excel_parser.tests'
+    ],
     install_requires=[
         'xlrd>=1.1.0',
         'python-dateutil>=2.6.1'
     ],
-    test_suite='runtests.runtests',
+    tests_require=['nose'],
+    test_suite='nose.collector',
+
     url='https://github.com/telminov/sw-excel-parser',
     license='MIT',
     author='Telminov Sergey',

@@ -1,4 +1,4 @@
-from collections import defaultdict
+from collections import defaultdict, OrderedDict
 from typing import List, Dict
 
 import xlrd
@@ -8,7 +8,7 @@ from xlrd.sheet import Sheet
 class Parser:
     item = None
 
-    def __init__(self, workbook: xlrd.Book = None, file_contents: str = None):
+    def __init__(self, workbook: xlrd.Book = None, file_contents: bytes = None):
         if file_contents:
             self.workbook = xlrd.open_workbook(file_contents=file_contents)
         elif workbook:
@@ -38,7 +38,7 @@ class Parser:
         fields = self.item._unbound_fields.values()
         header = {field.kwargs['header'].lower() for field in fields}
 
-        result = {}
+        result = OrderedDict()
         for sheet in sheets:
             sheet_data = (sheet.row_values(nrow) for nrow in range(sheet.nrows))
             for nrow, row_values in enumerate(sheet_data):

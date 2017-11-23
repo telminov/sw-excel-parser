@@ -1,5 +1,6 @@
 import random
 from unittest import TestCase
+from unittest import mock
 
 from sw_excel_parser import fields
 from sw_excel_parser import items
@@ -24,13 +25,23 @@ class ItemTestCase(TestCase):
             foo = fields.Field(header='foo')
             bar = fields.Field(header='bar')
 
+            def clean_foo(self, value):
+                return value
+
         self.assertTrue(hasattr(TestItem, '_unbound_fields'))
         self.assertFalse(hasattr(TestItem, '_fields'))
         self.assertEqual(len(TestItem._unbound_fields), 2)
         self.assertTrue(all(isinstance(field, fields.UnboundField) for field in TestItem._unbound_fields.values()))
 
-        item = TestItem(row=random.randint(1, 100))
+        item = TestItem(row=random.randint(1, 100), data=dict(foo='foo', bar='bar'))
 
         self.assertTrue(hasattr(item, '_fields'))
         self.assertEqual(len(item._fields), 2)
         self.assertTrue(all(isinstance(field, fields.Field) for field in item._fields.values()))
+        self.assertTrue(item.is_valid())
+
+        with mock.patch.object(TestItem, 'clean_foo') as mocked_cleaner:
+            mocked_item = TestItem(row=random.randint(1, 100), data=dict(foo='foo'))
+            self.assertFalse(mocked_item.is_valid())
+
+        self.assertTrue(mocked_cleaner.called)

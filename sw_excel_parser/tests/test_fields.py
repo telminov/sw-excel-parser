@@ -108,8 +108,8 @@ class DateFieldTestCase(FieldTestCase):
         foo_expected_value = dateutil.parser.parse(self.fields_data['foo'], dayfirst=self.test_item.foo.dayfirst)
         bar_expected_value = dateutil.parser.parse(self.fields_data['bar'], dayfirst=self.test_item.bar.dayfirst)
 
-        self.assertEqual(self.test_item.foo.to_python(self.fields_data['foo']), foo_expected_value)
-        self.assertEqual(self.test_item.bar.to_python(self.fields_data['bar']), bar_expected_value)
+        self.assertEqual(self.test_item.foo.to_python(self.fields_data['foo']), foo_expected_value.date())
+        self.assertEqual(self.test_item.bar.to_python(self.fields_data['bar']), bar_expected_value.date())
 
         with self.assertRaises(validators.ValidationError) as e:
             self.test_item.foo.to_python('testDate')
@@ -148,8 +148,14 @@ class IntegerFieldTestCase(FieldTestCase):
         self.fields_data = dict(foo=random.randint(0, 100), bar=random.randint(-100, 0))
 
     def test_field_to_python(self):
-        self.assertEqual(self.test_item.foo.to_python(self.fields_data['foo']), int(self.fields_data['foo']))
-        self.assertEqual(self.test_item.foo.to_python(self.fields_data['bar']), int(self.fields_data['bar']))
+        self.assertEqual(self.test_item.foo.to_python(self.fields_data['foo']), self.fields_data['foo'])
+        self.assertEqual(self.test_item.foo.to_python(self.fields_data['bar']), self.fields_data['bar'])
+        self.assertEqual(self.test_item.foo.to_python('11.0'), 11)
+
+        with self.assertRaises(validators.ValidationError) as e:
+            self.test_item.foo.to_python('11.1')
+
+        self.assertEqual(str(e.exception), 'Значение не является целым.')
 
         with self.assertRaises(validators.ValidationError) as e:
             self.test_item.foo.to_python('testInt')
@@ -184,3 +190,8 @@ class UUIDFieldTestCase(FieldTestCase):
 
         self.assertEqual(self.test_item.foo.to_python(self.fields_data['foo']), foo_expected_value)
         self.assertEqual(self.test_item.bar.to_python(self.fields_data['bar']), bar_expected_value)
+
+        with self.assertRaises(validators.ValidationError) as e:
+            self.test_item.bar.to_python('testUUID')
+
+        self.assertEqual(str(e.exception), 'Некорректное значение.')
