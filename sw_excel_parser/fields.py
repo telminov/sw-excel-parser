@@ -70,7 +70,7 @@ class BooleanField(Field):
 
     def __init__(self, *args , **kwargs):
         super().__init__(*args, **kwargs)
-        self.false_values = kwargs.get('false_values')
+        self.false_values = kwargs.get('false_values', [])
 
     def to_python(self, value: Any):
         if value in self.false_values:
@@ -84,8 +84,7 @@ class BooleanField(Field):
 class CharField(Field):
     def to_python(self, value: Any):
         if value:
-            if not isinstance(value, str):
-                value = str(value).strip()
+            value = str(value).strip()
 
         return value
 
@@ -96,10 +95,11 @@ class DateField(Field):
         self.dayfirst = kwargs.get('dayfirst', False)
 
     def to_python(self, value: Any):
-        try:
-            value = dateutil.parser.parse(value, dayfirst=self.dayfirst)
-        except (ValueError, OverflowError):
-            raise validators.ValidationError('Некорректное значение.')
+        if value:
+            try:
+                value = dateutil.parser.parse(value, dayfirst=self.dayfirst)
+            except (ValueError, OverflowError):
+                raise validators.ValidationError('Некорректное значение.')
 
         return value
 
@@ -119,7 +119,7 @@ class BaseNumericField(Field):
 
 class FloatField(BaseNumericField):
     def to_python(self, value: Any) -> float:
-        if not isinstance(value, float):
+        if value and not isinstance(value, float):
             try:
                 value = float(value)
             except ValueError:
@@ -130,7 +130,7 @@ class FloatField(BaseNumericField):
 
 class IntegerField(BaseNumericField):
     def to_python(self, value: Any) -> int:
-        if not isinstance(value, int):
+        if value and not isinstance(value, int):
             try:
                 value = float(value)
                 if value.is_integer():
@@ -156,9 +156,10 @@ class UUIDField(CharField):
         self.version = kwargs.get('version', 4)
 
     def to_python(self, value: Any):
-        try:
-            value = uuid.UUID(value, version=self.version)
-        except ValueError:
-            raise validators.ValidationError('Некорректное значение.')
+        if value:
+            try:
+                value = uuid.UUID(value)
+            except ValueError:
+                raise validators.ValidationError('Некорректное значение.')
 
         return value
