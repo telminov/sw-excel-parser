@@ -165,7 +165,7 @@ class EmailFieldTestCase(CharFieldTestCase):
 
         self.test_item_class = TestItem
         self.test_item = self.test_item_class(row=random.randint(1, 100))
-        self.fields_data = dict(foo='  foo\\bar@baz.qoox ', bar=' qoox\\baz@bar.foo')
+        self.fields_data = dict(foo='  foo_bar@baz.qoox ', bar=' qoox_baz@bar.foo')
 
 
 class UUIDFieldTestCase(FieldTestCase):
