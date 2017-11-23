@@ -26,10 +26,10 @@ class BaseItem:
 
 
 class Item(BaseItem, metaclass=ItemMeta):
-    def __init__(self, row: int, data: Dict[str, Any]):
+    def __init__(self, row: int, data: Dict[str, Any] = None):
         super().__init__(fields=self._unbound_fields)
         self.row = row
-        self.data = data
+        self.data = data or {}
         self.errors = {}
         self.cleaned_data = {}
 
