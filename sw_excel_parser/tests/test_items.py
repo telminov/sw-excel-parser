@@ -27,8 +27,10 @@ class ItemTestCase(TestCase):
         self.assertTrue(hasattr(TestItem, '_unbound_fields'))
         self.assertFalse(hasattr(TestItem, '_fields'))
         self.assertEqual(len(TestItem._unbound_fields), 2)
+        self.assertTrue(all(isinstance(field, fields.UnboundField) for field in TestItem._unbound_fields.values()))
 
         item = TestItem(row=random.randint(1, 100))
 
         self.assertTrue(hasattr(item, '_fields'))
         self.assertEqual(len(item._fields), 2)
+        self.assertTrue(all(isinstance(field, fields.Field) for field in item._fields.values()))
