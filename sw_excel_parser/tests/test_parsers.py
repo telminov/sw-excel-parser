@@ -1,5 +1,4 @@
 import os
-import hashlib
 from unittest import TestCase
 
 import xlrd
@@ -11,13 +10,6 @@ from sw_excel_parser import fields
 
 class ParserTestCase(TestCase):
     file_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'test_book.xls')
-    test_book_md5 = '5e1b0b29b7380adaef7fd1fb340b5273'
-
-    @classmethod
-    def setUpClass(cls):
-        with open(cls.file_path, 'rb') as workbook_file:
-            message = 'File test_book.xls has been changed since the last revision tests.'
-            assert hashlib.md5(workbook_file.read()).hexdigest() == cls.test_book_md5, message
 
     def setUp(self):
         self.workbook = xlrd.open_workbook(self.file_path)
