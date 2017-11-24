@@ -15,8 +15,9 @@ class UnboundFieldTestCase(TestCase):
             foo = fields.Field(header='foo', required=True)
             bar = fields.Field(header='bar', required=False)
 
+        self.row = 1
         self.test_item_class = TestItem
-        self.test_item = self.test_item_class(row=random.randint(1, 100))
+        self.test_item = self.test_item_class(row=self.row)
 
     def test_unbound_field(self):
         header = 'foo'
@@ -49,8 +50,9 @@ class FieldTestCase(TestCase):
             foo = fields.Field(header='foo', required=True)
             bar = fields.Field(header='bar', required=False)
 
+        self.row = 1
         self.test_item_class = TestItem
-        self.test_item = self.test_item_class(row=random.randint(1, 100))
+        self.test_item = self.test_item_class(row=self.row)
         self.fields_data = dict(foo='   foo ', bar=' bar  ')
 
     def test_field_extract(self):
@@ -67,8 +69,9 @@ class BooleanFieldTestCase(FieldTestCase):
             foo = fields.BooleanField(header='foo', false_values=['baz', 'quux'], required=True)
             bar = fields.BooleanField(header='bar', required=False)
 
+        self.row = 1
         self.test_item_class = TestItem
-        self.test_item = self.test_item_class(row=random.randint(1, 100))
+        self.test_item = self.test_item_class(row=self.row)
         self.fields_data = dict(foo='baz', bar='-')
 
     def test_field_to_python(self):
@@ -86,8 +89,9 @@ class CharFieldTestCase(FieldTestCase):
             foo = fields.CharField(header='foo', required=True)
             bar = fields.BooleanField(header='bar', required=False)
 
+        self.row = 1
         self.test_item_class = TestItem
-        self.test_item = self.test_item_class(row=random.randint(1, 100))
+        self.test_item = self.test_item_class(row=self.row)
         self.fields_data = dict(foo=' baz  ', bar=100)
 
     def test_field_to_python(self):
@@ -100,8 +104,9 @@ class DateFieldTestCase(FieldTestCase):
             foo = fields.DateField(header='foo', dayfirst=True)
             bar = fields.DateField(header='bar')
 
+        self.row = 1
         self.test_item_class = TestItem
-        self.test_item = self.test_item_class(row=random.randint(1, 100))
+        self.test_item = self.test_item_class(row=self.row)
         self.fields_data = dict(foo='2011.05.05', bar='2011.05.05')
 
     def test_field_to_python(self):
@@ -123,8 +128,9 @@ class FloatFieldTestCase(FieldTestCase):
             foo = fields.FloatField(header='foo', min_value=10)
             bar = fields.FloatField(header='bar', max_value=100)
 
+        self.row = 1
         self.test_item_class = TestItem
-        self.test_item = self.test_item_class(row=random.randint(1, 100))
+        self.test_item = self.test_item_class(row=self.row)
         self.fields_data = dict(foo='9.025', bar='100.001')
 
     def test_field_to_python(self):
@@ -143,8 +149,9 @@ class IntegerFieldTestCase(FieldTestCase):
             foo = fields.IntegerField(header='foo')
             bar = fields.IntegerField(header='bar')
 
+        self.row = 1
         self.test_item_class = TestItem
-        self.test_item = self.test_item_class(row=random.randint(1, 100))
+        self.test_item = self.test_item_class(row=self.row)
         self.fields_data = dict(foo=random.randint(0, 100), bar=random.randint(-100, 0))
 
     def test_field_to_python(self):
@@ -169,8 +176,9 @@ class EmailFieldTestCase(CharFieldTestCase):
             foo = fields.EmailField(header='foo')
             bar = fields.EmailField(header='bar')
 
+        self.row = 1
         self.test_item_class = TestItem
-        self.test_item = self.test_item_class(row=random.randint(1, 100))
+        self.test_item = self.test_item_class(row=self.row)
         self.fields_data = dict(foo='  foo_bar@baz.qoox ', bar=' qoox_baz@bar.foo')
 
 
@@ -180,8 +188,9 @@ class UUIDFieldTestCase(FieldTestCase):
             foo = fields.UUIDField(header='foo', version=5)
             bar = fields.UUIDField(header='bar', version=4)
 
+        self.row = 1
         self.test_item_class = TestItem
-        self.test_item = self.test_item_class(row=random.randint(1, 100))
+        self.test_item = self.test_item_class(row=self.row)
         self.fields_data = dict(foo=str(uuid.uuid5(uuid.NAMESPACE_URL, 'testUUID')), bar=str(uuid.uuid4()))
 
     def test_field_to_python(self):

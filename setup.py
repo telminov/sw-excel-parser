@@ -13,9 +13,6 @@ setup(
         'xlrd>=1.1.0',
         'python-dateutil>=2.6.1'
     ],
-    tests_require=['nose'],
-    test_suite='nose.collector',
-
     url='https://github.com/telminov/sw-excel-parser',
     license='MIT',
     author='Telminov Sergey',

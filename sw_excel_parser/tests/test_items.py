@@ -44,4 +44,4 @@ class ItemTestCase(TestCase):
             mocked_item = TestItem(row=random.randint(1, 100), data=dict(foo='foo'))
             self.assertFalse(mocked_item.is_valid())
 
-        self.assertTrue(mocked_cleaner.called)
+        mocked_cleaner.assert_called_with('foo')
