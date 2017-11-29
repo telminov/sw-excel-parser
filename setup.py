@@ -5,14 +5,13 @@ from sw_excel_parser import __version__
 setup(
     name='sw-excel-parser',
     version=__version__,
-    packages=[
-        'sw_excel_parser',
-        'sw_excel_parser.tests'
-    ],
+    packages=['sw_excel_parser', ],
     install_requires=[
         'xlrd>=1.1.0',
-        'python-dateutil>=2.6.1'
+        'python-dateutil>=2.6.1',
     ],
+    tests_require=['nose', ],
+    test_suite='nose.collector',
     url='https://github.com/telminov/sw-excel-parser',
     license='MIT',
     author='Telminov Sergey',
