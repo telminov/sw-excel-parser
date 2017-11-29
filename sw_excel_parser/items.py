@@ -1,7 +1,7 @@
 from typing import Any, Dict
 
-from . import fields
-from . import validators
+from sw_excel_parser import fields
+from sw_excel_parser import validators
 
 
 class ItemMeta(type):

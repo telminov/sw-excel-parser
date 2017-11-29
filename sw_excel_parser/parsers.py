@@ -1,4 +1,4 @@
-from collections import defaultdict, OrderedDict
+from collections import OrderedDict
 from typing import List, Dict
 
 import xlrd
@@ -16,7 +16,7 @@ class Parser:
         else:
             raise ValueError('You must provide workbook or file_contents')
 
-        self.sheet_items = defaultdict(list)
+        self.sheet_items =  OrderedDict()
 
     def __iter__(self):
         return iter(self.sheet_items.items())
@@ -64,6 +64,9 @@ class Parser:
             data_offset = header_nrow + 1
             sheet_header = list(title.lower().strip() for title in self.get_header(sheet))
             sheet_data = list(sheet.row_values(nrow) for nrow in range(data_offset, sheet.nrows))
+
+            if sheet_data:
+                self.sheet_items[sheet] = []
 
             for nrow, row_data in enumerate(sheet_data, start=data_offset):
                 item = self.item(nrow, dict(zip(sheet_header, row_data)))

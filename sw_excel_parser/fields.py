@@ -4,7 +4,7 @@ from typing import Any, Type, List, Dict
 
 import dateutil.parser
 
-from . import validators
+from sw_excel_parser import validators
 
 
 class UnboundField:
