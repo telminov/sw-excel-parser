@@ -1,3 +1,4 @@
+# python setup.py sdist register bdist_egg upload
 from setuptools import setup
 from sw_excel_parser import __version__
 
