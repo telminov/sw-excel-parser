@@ -17,8 +17,8 @@ class ItemTestCase(TestCase):
 
         item = TestEmptyItem(row=random.randint(1, 100))
 
-        self.assertTrue(hasattr(item, '_fields'))
-        self.assertEqual(item._fields, {})
+        self.assertTrue(hasattr(item, 'fields'))
+        self.assertEqual(item.fields, {})
 
     def test_item(self):
         class TestItem(items.Item):
@@ -29,15 +29,15 @@ class ItemTestCase(TestCase):
                 return value
 
         self.assertTrue(hasattr(TestItem, '_unbound_fields'))
-        self.assertFalse(hasattr(TestItem, '_fields'))
+        self.assertFalse(hasattr(TestItem, 'fields'))
         self.assertEqual(len(TestItem._unbound_fields), 2)
         self.assertTrue(all(isinstance(field, fields.UnboundField) for field in TestItem._unbound_fields.values()))
 
         item = TestItem(row=random.randint(1, 100), data=dict(foo='foo', bar='bar'))
 
-        self.assertTrue(hasattr(item, '_fields'))
-        self.assertEqual(len(item._fields), 2)
-        self.assertTrue(all(isinstance(field, fields.Field) for field in item._fields.values()))
+        self.assertTrue(hasattr(item, 'fields'))
+        self.assertEqual(len(item.fields), 2)
+        self.assertTrue(all(isinstance(field, fields.Field) for field in item.fields.values()))
         self.assertTrue(item.is_valid())
 
         with mock.patch.object(TestItem, 'clean_foo') as mocked_cleaner:

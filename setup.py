@@ -2,7 +2,6 @@
 from setuptools import setup
 from sw_excel_parser import __version__
 
-
 setup(
     name='sw-excel-parser',
     version=__version__,

@@ -1,4 +1,5 @@
 from typing import Any, Dict
+from collections import OrderedDict
 
 from sw_excel_parser import fields
 from sw_excel_parser import validators
@@ -8,20 +9,19 @@ class ItemMeta(type):
     def __init__(cls, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
-        unbound_fields = {}
-        for key, value in cls.__dict__.items():
-            if isinstance(value, fields.UnboundField):
-                unbound_fields[key] = value
-
-        cls._unbound_fields = unbound_fields
+        cls._unbound_fields = {}
+        for klass in cls.mro():
+            for key, value in klass.__dict__.items():
+                if isinstance(value, fields.UnboundField):
+                    cls._unbound_fields[key] = value
 
 
 class BaseItem:
     def __init__(self, fields, *args, **kwargs):
-        self._fields = {}
+        self.fields = OrderedDict()
         for name, unbound_field in fields.items():
             bound_field = unbound_field.bind(item=self, name=name)
-            self._fields[name] = bound_field
+            self.fields[name] = bound_field
             setattr(self, name, bound_field)
 
 
@@ -42,7 +42,7 @@ class Item(BaseItem, metaclass=ItemMeta):
         self.errors.clear()
         self.cleaned_data.clear()
 
-        for name, field in self._fields.items():
+        for name, field in self.fields.items():
             try:
                 value = field.clean(self.data)
                 field_cleaner = getattr(self, 'clean_{}'.format(name), None)
