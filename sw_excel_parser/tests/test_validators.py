@@ -10,7 +10,6 @@ class RequiredValidatorTestCase(TestCase):
         self.validator = validators.RequiredValidator()
         self.field = mock.Mock(spec=fields.Field, required=True)
 
-
     def test_validator(self):
         value = 'testValue'
         self.assertEqual(self.validator(self.field, value), value)

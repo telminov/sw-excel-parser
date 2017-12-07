@@ -40,8 +40,8 @@ class UnboundFieldTestCase(TestCase):
         self.assertTrue(field_kwargs['required'] == field.required)
 
     def test_field(self):
-        self.assertTrue(all(field._item is self.test_item) for field in self.test_item._fields.values())
-        self.assertTrue(all(key == value._name for key, value in self.test_item._fields.items()))
+        self.assertTrue(all(field._item is self.test_item) for field in self.test_item.fields.values())
+        self.assertTrue(all(key == value.name for key, value in self.test_item.fields.items()))
 
 
 class FieldTestCase(TestCase):

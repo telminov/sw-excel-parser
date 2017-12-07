@@ -8,14 +8,12 @@ from sw_excel_parser import validators
 class ItemMeta(type):
     def __init__(cls, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        cls._unbound_fields = None
 
-        unbound_fields = {}
+        cls._unbound_fields = {}
         for klass in cls.mro():
             for key, value in klass.__dict__.items():
                 if isinstance(value, fields.UnboundField):
-                    unbound_fields[key] = value
-        cls._unbound_fields = unbound_fields
+                    cls._unbound_fields[key] = value
 
 
 class BaseItem:

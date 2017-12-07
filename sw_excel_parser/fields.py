@@ -14,7 +14,7 @@ class UnboundField:
         self.kwargs = kwargs
 
     def bind(self, item, name: str) -> 'Field':
-        return self.field_class(*self.args, **dict(self.kwargs, _item=item, _name=name))
+        return self.field_class(*self.args, **dict(self.kwargs, _item=item, name=name))
 
     def __repr__(self):
         return '<{cls} ({field_cls} (args={args}, kwargs={kwargs}))>'.format(
@@ -31,7 +31,7 @@ class Field:
     ]
 
     def __new__(cls, *args, **kwargs):
-        if '_item' and '_name' in kwargs:
+        if '_item' and 'name' in kwargs:
             instance = super().__new__(cls)
         else:
             instance = UnboundField(cls, *args, **kwargs)
@@ -45,7 +45,7 @@ class Field:
         self.value = None
 
         self._item = kwargs.get('_item')
-        self._name = kwargs.get('_name')
+        self.name = kwargs.get('name')
 
     def run_validators(self, value: Any) -> Any:
         for validator in self.validators:
