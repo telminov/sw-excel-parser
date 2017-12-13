@@ -14,15 +14,11 @@ class ParserTestCase(TestCase):
     def setUp(self):
         self.workbook = xlrd.open_workbook(self.file_path)
 
-        class TestItem(items.Item):
+        class TestParser(parsers.Parser):
             foo = fields.CharField(header='foo')
             bar = fields.CharField(header='bar')
             baz = fields.CharField(header='baz')
 
-        class TestParser(parsers.Parser):
-            item = TestItem
-
-        self.item_class = TestItem
         self.parser_class = TestParser
         self.parser = self.parser_class(workbook=self.workbook)
 
@@ -41,10 +37,10 @@ class ParserTestCase(TestCase):
         self.assertEqual(str(e.exception), 'You must provide workbook or file_contents')
 
     def test_find_headers(self):
-        self.assertEqual(list(self.parser.find_headers().values()), [0, 1])
+        self.assertEqual(list(self.parser.find_headers().values()), [4, 1])
 
     def test_get_header(self):
-        self.assertEqual(self.parser.get_header(self.workbook.sheets()[0]), ['Foo ', '  Bar ', 'Baz'])
+        self.assertEqual(self.parser.get_header(self.workbook.sheets()[0]), ['', '', 'Foo ', '  Bar ', 'Baz'])
 
     def test_parse(self):
         self.parser.parse()
