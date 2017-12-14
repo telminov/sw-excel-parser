@@ -1,4 +1,5 @@
 from collections import OrderedDict
+from itertools import chain
 from typing import List, Dict, Optional
 
 import xlrd
@@ -94,3 +95,31 @@ class BaseEngine:
             cleaned_data[sheet_name] = sheet_data
 
         return cleaned_data
+
+
+class StatsMixin:
+    def __init__(self, *args, **kwargs):
+        super(StatsMixin, self).__init__(*args, **kwargs)
+        self.stats = {}
+
+    def parse(self):
+        super().parse()
+        self.compute_stats()
+
+    def compute_stats(self):
+        items = list(chain.from_iterable(self.sheet_items.values()))
+
+        success_count = len([item for item in items if item.is_valid()])
+        errors_count = len(items) - success_count
+        erroneous_sheets = {sheet for sheet, items in self if any(not item.is_valid() for item in items)}
+
+        self.stats = dict(
+            total_count=len(items),
+            success_count=success_count,
+            errors_count=errors_count,
+            erroneous_sheets=erroneous_sheets
+        )
+
+
+class Engine(StatsMixin, BaseEngine):
+    pass

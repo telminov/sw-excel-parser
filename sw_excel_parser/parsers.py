@@ -14,7 +14,7 @@ class ParserMeta(items.ItemMeta):
 
 
 class DefaultParserMeta:
-    engine_class = engines.BaseEngine
+    engine_class = engines.Engine
     item_class = items.Item
 
 
