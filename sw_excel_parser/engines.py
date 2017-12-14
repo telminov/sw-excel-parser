@@ -47,8 +47,13 @@ class BaseEngine:
                 if row_values >= header:
                     result[sheet] = nrow
                     break
+                else:
+                    self.lost_header_handler(header=header, row_values=row_values)
 
         return result
+
+    def lost_header_handler(self, header, row_values):
+        pass
 
     def get_header(self, sheet) -> List[str] or None:
         header = None
@@ -121,5 +126,51 @@ class StatsMixin:
         )
 
 
-class Engine(StatsMixin, BaseEngine):
+class ErrorsMixin:
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.lost_headers = set()
+        self.errors = {}
+
+    def parse(self):
+        super().parse()
+        self.collect_errors()
+
+    def lost_header_handler(self, header, row_values):
+        intersection = header & row_values
+
+        if intersection:
+            lost_headers = header - row_values
+            self.lost_headers.update(lost_headers)
+
+    def collect_errors(self):
+        items = list(chain.from_iterable(self.values()))
+        erroneous_items = [item for item in items if not item.is_valid()]
+
+        if self.lost_headers:
+            self.errors = dict(
+                non_field_errors=dict(
+                    lost_headers=self.lost_headers
+                )
+            )
+
+        for item in erroneous_items:
+            for name, field in item.fields.items():
+                if name in item.errors:
+                    if name not in self.errors:
+                        self.errors[name] = dict(
+                            label=field.header,
+                            rows=[]
+                        )
+
+                    self.errors[name]['rows'].append(
+                        dict(
+                            nrow=item.nrow,
+                            value=field.extract_data(item.data),
+                            error=item.errors[name]
+                        )
+                    )
+
+
+class Engine(ErrorsMixin, StatsMixin, BaseEngine):
     pass
