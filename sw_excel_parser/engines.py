@@ -1,6 +1,6 @@
 from collections import OrderedDict
 from itertools import chain
-from typing import List, Dict, Optional
+from typing import List, Dict, Optional, Set
 
 import xlrd
 from xlrd.sheet import Sheet
@@ -52,10 +52,10 @@ class BaseEngine:
 
         return result
 
-    def lost_header_handler(self, header, row_values):
+    def lost_header_handler(self, header, row_values) -> None:
         pass
 
-    def get_header(self, sheet) -> List[str] or None:
+    def get_header(self, sheet) -> Optional[List[str]]:
         header = None
         header_map = self.find_headers()
         if sheet in header_map:
@@ -107,11 +107,13 @@ class StatsMixin:
         super(StatsMixin, self).__init__(*args, **kwargs)
         self.stats = {}
 
-    def parse(self):
+    def parse(self) -> None:
+        self.stats.clear()
+
         super().parse()
         self.compute_stats()
 
-    def compute_stats(self):
+    def compute_stats(self) -> None:
         items = list(chain.from_iterable(self.sheet_items.values()))
 
         success_count = len([item for item in items if item.is_valid()])
@@ -132,18 +134,18 @@ class ErrorsMixin:
         self.lost_headers = set()
         self.errors = {}
 
-    def parse(self):
+    def parse(self) -> None:
+        self.lost_headers.clear()
+        self.errors.clear()
+
         super().parse()
         self.collect_errors()
 
-    def lost_header_handler(self, header, row_values):
-        intersection = header & row_values
+    def lost_header_handler(self, header: Set[str], row_values: Set[str]) -> None:
+        if header & row_values:
+            self.lost_headers.update(header - row_values)
 
-        if intersection:
-            lost_headers = header - row_values
-            self.lost_headers.update(lost_headers)
-
-    def collect_errors(self):
+    def collect_errors(self) -> None:
         items = list(chain.from_iterable(self.values()))
         erroneous_items = [item for item in items if not item.is_valid()]
 
