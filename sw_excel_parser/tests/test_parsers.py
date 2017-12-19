@@ -4,7 +4,6 @@ from unittest import TestCase
 import xlrd
 
 from sw_excel_parser import parsers
-from sw_excel_parser import items
 from sw_excel_parser import fields
 
 
@@ -32,7 +31,7 @@ class ParserTestCase(TestCase):
         self.assertEqual(self.workbook.sheet_names(), parser.workbook.sheet_names())
 
         with self.assertRaises(ValueError) as e:
-            self.parser_class()
+            self.parser_class().parse()
 
         self.assertEqual(str(e.exception), 'You must provide workbook or file_contents')
 
